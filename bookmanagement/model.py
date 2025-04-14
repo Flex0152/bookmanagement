@@ -80,7 +80,7 @@ class DatabaseAPI:
             found = session.scalars(query).first()
         return found
     
-    def get_books_by_author(self, author_name) -> List[Book]:
+    def get_books_by_author(self, author_name: str) -> List[Book]:
         with Session(self.engine) as session:
             author = (select(Author)
                       .where(Author.name == author_name)
