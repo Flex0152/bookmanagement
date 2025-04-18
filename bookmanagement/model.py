@@ -27,10 +27,11 @@ class Book(Base):
     title: Mapped[str] = mapped_column(unique=True)
     isbn: Mapped[str] = mapped_column(nullable=True)
     author_id: Mapped[int] = mapped_column(ForeignKey("tblAuthor.id", ondelete='CASCADE'))
-    author: Mapped[Author] = relationship(back_populates="books")
     genre_id: Mapped[int] = mapped_column(ForeignKey("tblGenre.id", ondelete="CASCADE"))
+    
     genre = relationship('Genre', back_populates="books")
-
+    author: Mapped[Author] = relationship(back_populates="books")
+    
     def __repr__(self):
         return f"<Title: {self.title}; AuthorID: {self.author_id}>"
 
@@ -96,13 +97,18 @@ class DatabaseAPI:
             found = session.scalars(author).first()
             return found.books if found else []
         
-    def get_books_by_genre(self, genre_name) -> List[Book]:
+    def get_books_by_genre(self, genre_name: str) -> List[Book]:
         with Session(self.engine) as session:
-            genre = (select(Genre)
+            genre = (select(Book)
+                     .join(Book.genre)
+                     .join(Book.author)
+                     .options(
+                         selectinload(Book.author),
+                         selectinload(Book.genre)
+                     )
                      .where(Genre.name == genre_name)
-                     .options(selectinload(Genre.books)))
-            found = session.scalars(genre).first()
-            return found.books if found else []
+                    )
+            return list(session.scalars(genre))
         
     def get_genre_by_name(self, genre_name: str) -> Genre:
         with Session(self.engine) as session:
@@ -151,17 +157,19 @@ class DatabaseAPI:
 
 if __name__ == "__main__":
     db = DatabaseAPI()
-    result = db.add_book(title="Der Herr der Ringe", author_name="J.R.R. Tolkien", genre_name="Fantasy")
-    print(result)
-    result = db.add_book(title="Niemandsland", author_name="Neil Gaiman", genre_name="Fantasy")
-    print(result)
-    result = db.add_book(title="American Gods", author_name="Neil Gaiman", genre_name="Fantasy")
-    print(result)
-    result = db.get_author_by_name('Neil Gaiman')
-    print(result)
-    result = db.add_book(title="Harry Potter und der Feuerkelch", author_name="J.K. Rowling", genre_name="Fantasy")
-    result = db.add_book(title="Praxiswissen Docker", author_name="Sean Kane", genre_name="Fachbuch")
+    result = db.get_books_by_genre("Fantasy")
+    print(result[0].author.name)
+    # result = db.add_book(title="Der Herr der Ringe", author_name="J.R.R. Tolkien", genre_name="Fantasy")
+    # print(result)
+    # result = db.add_book(title="Niemandsland", author_name="Neil Gaiman", genre_name="Fantasy")
+    # print(result)
+    # result = db.add_book(title="American Gods", author_name="Neil Gaiman", genre_name="Fantasy")
+    # print(result)
+    # result = db.get_author_by_name('Neil Gaiman')
+    # print(result)
+    # result = db.add_book(title="Harry Potter und der Feuerkelch", author_name="J.K. Rowling", genre_name="Fantasy")
+    # result = db.add_book(title="Praxiswissen Docker", author_name="Sean Kane", genre_name="Fachbuch")
 
-    print(db.get_books_by_author('Neil Gaiman'))
-    print(db.get_books_by_genre("Fantasy"))
-    print(db.get_books_by_genre("Fachbuch"))
+    # print(db.get_books_by_author('Neil Gaiman'))
+    # print(db.get_books_by_genre("Fantasy"))
+    # print(db.get_books_by_genre("Fachbuch"))
