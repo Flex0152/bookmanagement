@@ -41,6 +41,9 @@ class Genre(Base):
     name: Mapped[str] = mapped_column(unique=True)
     books = relationship('Book', back_populates="genre")
 
+    def __repr__(self):
+        return f"<Genre: {self.name}>"
+
 
 class DatabaseAPI:
     def __init__(self, connection_string: str = "sqlite:///books.db"):
@@ -127,6 +130,11 @@ class DatabaseAPI:
             query = select(Genre).where(Genre.name == genre_name)
             found = session.scalars(query).first()
         return found
+    
+    def get_all_genre(self) -> list:
+        with Session(self.engine) as session:
+            query = select(Genre)
+            return list(session.scalars(query))        
                      
     def add_genre(self, genre_name: str) -> Genre:
         found = self.get_genre_by_name(genre_name)
@@ -169,8 +177,7 @@ class DatabaseAPI:
 
 if __name__ == "__main__":
     db = DatabaseAPI()
-    result = db.get_books_by_genre("Fantasy")
-    print(result[0].author.name)
+    print([x.name for x in db.get_all_genre()])
     # result = db.add_book(title="Der Herr der Ringe", author_name="J.R.R. Tolkien", genre_name="Fantasy")
     # print(result)
     # result = db.add_book(title="Niemandsland", author_name="Neil Gaiman", genre_name="Fantasy")
