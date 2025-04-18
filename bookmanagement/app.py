@@ -46,7 +46,7 @@ class BookManagementApp(tk.Tk):
         self.data_tree.heading('#0', text="Title")
         self.data_tree.heading('Author', text="Autor")
         self.data_tree.heading('Genre', text="Genre")
-        all_books = self.db.get_books_by_genre("Fantasy")
+        all_books = self.db.get_all_books()
         if len(all_books) > 0:
             for book in all_books:
                 self.data_tree.insert(
@@ -55,6 +55,8 @@ class BookManagementApp(tk.Tk):
                     text=book.title,
                     values=(book.author.name, book.genre.name)
                 )
+        else:
+            messagebox.showinfo("Hinweis", "Ich konnte keine Bücher finden!")
 
 if __name__ == "__main__":
     app = BookManagementApp()
