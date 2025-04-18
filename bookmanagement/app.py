@@ -31,3 +31,7 @@ class BookManagementApp(tk.Tk):
         for i in range(2):
             self.btn_frame.rowconfigure(i, weight=1)
             self.btn_frame.columnconfigure(i, weight=1)
+
+if __name__ == "__main__":
+    app = BookManagementApp()
+    app.mainloop()
