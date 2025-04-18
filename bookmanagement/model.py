@@ -110,6 +110,18 @@ class DatabaseAPI:
                     )
             return list(session.scalars(genre))
         
+    def get_all_books(self) -> List[Book]:
+        with Session(self.engine) as session:
+            genre = (select(Book)
+                     .join(Book.genre)
+                     .join(Book.author)
+                     .options(
+                         selectinload(Book.author),
+                         selectinload(Book.genre)
+                     )
+                    )
+            return list(session.scalars(genre))
+
     def get_genre_by_name(self, genre_name: str) -> Genre:
         with Session(self.engine) as session:
             query = select(Genre).where(Genre.name == genre_name)
