@@ -22,15 +22,17 @@ class BookManagementApp(tk.Tk):
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
 
-        # vier Zeilen, vier Zeilen Rest 
-        for i in range(4):
+        for i in range(1):
             self.frame.rowconfigure(i, weight=1)
             self.frame.columnconfigure(i, weight=1)
         
         # zwei Zeilen; zwei Spalten Buttons
-        for i in range(2):
+        for i in range(1):
             self.btn_frame.rowconfigure(i, weight=1)
             self.btn_frame.columnconfigure(i, weight=1)
+
+        self.btn_quit = Button(self.btn_frame, text="Beenden", command=self.destroy)
+        self.btn_frame.grid(column=0, row=99)
 
 if __name__ == "__main__":
     app = BookManagementApp()
