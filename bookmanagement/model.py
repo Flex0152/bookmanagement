@@ -134,7 +134,12 @@ class DatabaseAPI:
     def get_all_genre(self) -> list:
         with Session(self.engine) as session:
             query = select(Genre)
-            return list(session.scalars(query))        
+            return list(session.scalars(query))     
+
+    def get_all_authors(self) -> list:
+        with Session(self.engine) as session:
+            query = select(Author)
+            return list(session.scalars(query)) 
                      
     def add_genre(self, genre_name: str) -> Genre:
         found = self.get_genre_by_name(genre_name)

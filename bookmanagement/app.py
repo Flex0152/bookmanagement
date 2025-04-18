@@ -27,7 +27,6 @@ class AddBookWindow:
 
         self.title = "Neues Buch hinzufügen"
 
-        self.inAuthor = tk.StringVar()
         self.inTitle = tk.StringVar()
 
         self.lbl_title = Label(self.frame, text="Titel: ")
@@ -37,8 +36,9 @@ class AddBookWindow:
 
         self.lbl_author = Label(self.frame, text="Autor: ")
         self.lbl_author.grid(row=1, column=0, padx=1, pady=1, sticky="nsew")
-        self.in_author = Entry(self.frame, textvariable=self.inAuthor)
-        self.in_author.grid(row=1, column=1, padx=1, pady=1, sticky="nsew")
+        self.cmb_author = Combobox(self.frame)
+        self.cmb_author['values'] = [item.name for item in self.db.get_all_authors()]
+        self.cmb_author.grid(row=1, column=1, padx=1, pady=1, sticky="nsew")
 
         self.lbl_genre = Label(self.frame, text="Genre: ")
         self.lbl_genre.grid(row=2, column=0, padx=1, pady=1, sticky="nsew")
@@ -54,7 +54,7 @@ class AddBookWindow:
 
     def add_book_func(self):
         title = self.in_title.get().strip()
-        author = self.in_author.get().strip()
+        author = self.cmb_author.get().strip()
         genre = self.cmb_genre.get().strip()
 
         if title and author and genre:
