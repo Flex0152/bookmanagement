@@ -1,3 +1,2 @@
-### Allgemein
-Eine Verwaltung für Bücher. 
-Es können Bücher hinzugefügt, entfernt und gesucht werden. 
+### General
+This is a small book management application. Currently, it allows for the maintenance of books along with their genre and author. The data is currently stored in an SQLite database. The interaction with the application is done through a Tkinter GUI.
