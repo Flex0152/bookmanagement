@@ -88,7 +88,16 @@ class DatabaseAPI:
     
     def get_book_by_name(self, title: str) -> Book:
         with Session(self.engine) as session:
-            query = select(Book).where(Book.title == title)
+            query = (select(Book)
+                     .join(Book.genre)
+                     .join(Book.author)
+                     .options(
+                         selectinload(Book.author),
+                         selectinload(Book.genre)
+                     )
+                     .where(Book.title == title)
+                    )
+            #select(Book).where(Book.title == title)
             found = session.scalars(query).first()
         return found
     
@@ -178,11 +187,31 @@ class DatabaseAPI:
         else:
             book = found
         return book
+    
+    def update_book(self, book_id: int, new_title: str, new_author_name: str, new_genre_name: str) -> None:
+        with Session(self.engine) as session:
+            book = session.get(Book, book_id)
+            if not book:
+                raise ValueError(f"Buch mit ID {book_id} nicht gefunden.")
+
+            # Hole oder erstelle Autor und Genre
+            author = self.add_author(new_author_name)
+            genre = self.add_genre(new_genre_name)
+
+            # Update der Felder
+            book.title = new_title
+            book.author = author
+            book.genre = genre
+
+            session.commit()
+
 
 
 if __name__ == "__main__":
     db = DatabaseAPI()
-    print([x.name for x in db.get_all_genre()])
+    buch = db.get_book_by_name("Niemandsland")
+    print(buch.genre)
+    print(buch.author)
     # result = db.add_book(title="Der Herr der Ringe", author_name="J.R.R. Tolkien", genre_name="Fantasy")
     # print(result)
     # result = db.add_book(title="Niemandsland", author_name="Neil Gaiman", genre_name="Fantasy")
