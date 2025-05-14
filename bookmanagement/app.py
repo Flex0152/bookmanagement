@@ -111,6 +111,9 @@ class BookManagementApp(tk.Tk):
         self.btn_edit_book = Button(self.btn_frame, text="Buch bearbeiten", command=self.edit_book_window)
         self.btn_edit_book.grid(column=0, columnspan=3, row=2, sticky="nsew")
 
+        self.btn_delete_book = Button(self.btn_frame, text="Buch löschen", command=self.delete_book)
+        self.btn_delete_book.grid(column=0, columnspan=3, row=3, sticky="nsew")
+
         self.btn_quit = Button(self.btn_frame, text="Beenden", command=self.destroy)
         self.btn_quit.grid(column=0, columnspan=3, row=99, sticky="nsew")
 
@@ -125,6 +128,21 @@ class BookManagementApp(tk.Tk):
         if curItem != "":
             selected = self.data_tree.item(curItem)
             EditBookWindow(self, selected['text'])
+
+    def delete_book(self):
+        curItem = self.data_tree.focus()
+        if curItem != "":
+            selected = self.data_tree.item(curItem)
+            result = self.db.delete_book_by_name(selected['text'])
+            delete = messagebox.askyesnocancel(title="Title entfernen", message=f"Soll '{selected['text']}' wirklich entfernt werden?")
+            if delete:
+                if result > 1:
+                    messagebox.showwarning(title="Title entfernt", message=f"Es wurden {result} Title entfernt!")
+                elif result == 1:
+                    messagebox.showinfo(title="Title entfnert", message="Das Buch wurde erfolgreich entfernt!")
+                else:
+                    messagebox.showerror(title="Title entfernt", message="Der Title konnte nicht entfernt werden!")
+
 
     def add_book_window(self):
         AddBookWindow(self)
