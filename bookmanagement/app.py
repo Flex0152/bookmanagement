@@ -1,7 +1,8 @@
 from model import DatabaseAPI
 import tkinter as tk
-from tkinter import TclError, messagebox
+from tkinter import messagebox
 from tkinter.ttk import Label, Entry, Button, Spinbox, Treeview, Combobox
+from edit_book_window import EditBookWindow
 
 
 class AddBookWindow:
@@ -107,12 +108,23 @@ class BookManagementApp(tk.Tk):
         self.btn_add_book = Button(self.btn_frame, text="Buch hinzufügen", command=self.add_book_window)
         self.btn_add_book.grid(column=0, columnspan=3, row=1, sticky="nsew")
 
+        self.btn_edit_book = Button(self.btn_frame, text="Buch bearbeiten", command=self.edit_book_window)
+        self.btn_edit_book.grid(column=0, columnspan=3, row=2, sticky="nsew")
+
         self.btn_quit = Button(self.btn_frame, text="Beenden", command=self.destroy)
         self.btn_quit.grid(column=0, columnspan=3, row=99, sticky="nsew")
+
+        self.all_books_func()
 
     def _clear_treeview(self):
         for i in self.data_tree.get_children():
             self.data_tree.delete(i)
+
+    def edit_book_window(self):
+        curItem = self.data_tree.focus()
+        if curItem != "":
+            selected = self.data_tree.item(curItem)
+            EditBookWindow(self, selected['text'])
 
     def add_book_window(self):
         AddBookWindow(self)
@@ -134,6 +146,7 @@ class BookManagementApp(tk.Tk):
                 )
         else:
             messagebox.showinfo("Hinweis", "Ich konnte keine Bücher finden!")
+
 
 if __name__ == "__main__":
     app = BookManagementApp()

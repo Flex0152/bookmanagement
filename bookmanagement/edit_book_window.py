@@ -91,6 +91,7 @@ class EditBookWindow:
         try:
             self.db.update_book(self.book_obj.id, new_title, new_author, new_genre, isbn=new_isbn)
             messagebox.showinfo(title="Buch anpassen", message="Das Buch wurde erfolgreich angepasst.")
+            self.parent_app.all_books_func()
         except ValueError as e:
             messagebox.showerror(title="Buch nicht gefunden!", message=e)
 
