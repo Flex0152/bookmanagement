@@ -1,7 +1,7 @@
 from model import DatabaseAPI
 import tkinter as tk
-from tkinter import TclError, messagebox
-from tkinter.ttk import Label, Entry, Button, Spinbox, Treeview, Combobox
+from tkinter import messagebox
+from tkinter.ttk import Label, Entry, Button, Combobox
 
 
 class tmpApp(tk.Tk):
@@ -15,7 +15,7 @@ class tmpApp(tk.Tk):
         self.btn.grid(row=1, column=0)
 
     def action(self):
-        EditBookWindow(self, "Niemalsland")
+        EditBookWindow(self, "Der Herr der Ringe")
 
 
 

@@ -19,7 +19,7 @@ class AddBookWindow:
         self.frame = tk.Frame(self.window)
         self.frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
-        for i in range(5):
+        for i in range(6):
             self.frame.rowconfigure(i, weight=1)
         
         for i in range(2):
@@ -28,37 +28,43 @@ class AddBookWindow:
         self.title = "Neues Buch hinzufügen"
 
         self.inTitle = tk.StringVar()
-
         self.lbl_title = Label(self.frame, text="Titel: ")
         self.lbl_title.grid(row=0, column=0, padx=1, pady=1, sticky="nsew")
         self.in_title = Entry(self.frame, textvariable=self.inTitle)
         self.in_title.grid(row=0, column=1, padx=1, pady=1, sticky="nsew")
 
+        self.inIsbn = tk.StringVar()
+        self.lbl_isbn = Label(self.frame, text="ISBN: ")
+        self.lbl_isbn.grid(row=1, column=0, padx=1, pady=1, sticky="nsew")
+        self.in_isbn = Entry(self.frame, textvariable=self.inIsbn)
+        self.in_isbn.grid(row=1, column=1, padx=1, pady=1, sticky="nsew")
+
         self.lbl_author = Label(self.frame, text="Autor: ")
-        self.lbl_author.grid(row=1, column=0, padx=1, pady=1, sticky="nsew")
+        self.lbl_author.grid(row=2, column=0, padx=1, pady=1, sticky="nsew")
         self.cmb_author = Combobox(self.frame)
         self.cmb_author['values'] = [item.name for item in self.db.get_all_authors()]
-        self.cmb_author.grid(row=1, column=1, padx=1, pady=1, sticky="nsew")
+        self.cmb_author.grid(row=2, column=1, padx=1, pady=1, sticky="nsew")
 
         self.lbl_genre = Label(self.frame, text="Genre: ")
-        self.lbl_genre.grid(row=2, column=0, padx=1, pady=1, sticky="nsew")
+        self.lbl_genre.grid(row=3, column=0, padx=1, pady=1, sticky="nsew")
         self.cmb_genre = Combobox(self.frame)
         self.cmb_genre['values'] = [item.name for item in self.db.get_all_genre()]
-        self.cmb_genre.grid(row=2, column=1, padx=1, pady=1, sticky="nsew")
+        self.cmb_genre.grid(row=3, column=1, padx=1, pady=1, sticky="nsew")
 
         self.btn_check = Button(self.frame, text="Hinzufügen", command=self.add_book_func)
-        self.btn_check.grid(row=3, column=0, columnspan=2, padx=1, pady=1, sticky="nsew")
+        self.btn_check.grid(row=4, column=0, columnspan=2, padx=1, pady=1, sticky="nsew")
 
         self.btn_quit = Button(self.frame, text="Abbrechen", command=self.window.destroy)
-        self.btn_quit.grid(row=4, column=0, columnspan=2, padx=1, pady=1, sticky="nsew")
+        self.btn_quit.grid(row=5, column=0, columnspan=2, padx=1, pady=1, sticky="nsew")
 
     def add_book_func(self):
         title = self.in_title.get().strip()
         author = self.cmb_author.get().strip()
         genre = self.cmb_genre.get().strip()
+        isbn = self.inIsbn.get().strip() if self.inIsbn.get() != "" else None
 
         if title and author and genre:
-            self.parent_app.db.add_book(title, author, genre)
+            self.parent_app.db.add_book(title, author, genre, isbn)
             self.parent_app.all_books_func()
             self.window.destroy()
         else:

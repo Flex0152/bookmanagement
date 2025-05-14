@@ -174,13 +174,13 @@ class DatabaseAPI:
             author = found
         return author
     
-    def add_book(self, title: str, author_name: str, genre_name: str) -> Book:
+    def add_book(self, title: str, author_name: str, genre_name: str, isbn: str | None = None) -> Book:
         author = self.add_author(author_name)
         genre = self.add_genre(genre_name)
         found = self.get_book_by_name(title)
         if not found:
             with Session(self.engine) as session:
-                book = Book(title=title, author=author, genre=genre)
+                book = Book(title=title, author=author, genre=genre, isbn=isbn)
                 session.add(book)
                 session.commit()
                 session.refresh(book)
