@@ -133,9 +133,10 @@ class BookManagementApp(tk.Tk):
         curItem = self.data_tree.focus()
         if curItem != "":
             selected = self.data_tree.item(curItem)
-            result = self.db.delete_book_by_name(selected['text'])
             delete = messagebox.askyesnocancel(title="Title entfernen", message=f"Soll '{selected['text']}' wirklich entfernt werden?")
             if delete:
+                result = self.db.delete_book_by_name(selected['text'])
+                self.all_books_func()
                 if result > 1:
                     messagebox.showwarning(title="Title entfernt", message=f"Es wurden {result} Title entfernt!")
                 elif result == 1:
