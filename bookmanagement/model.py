@@ -188,7 +188,7 @@ class DatabaseAPI:
             book = found
         return book
     
-    def update_book(self, book_id: int, new_title: str, new_author_name: str, new_genre_name: str) -> None:
+    def update_book(self, book_id: int, new_title: str, new_author_name: str, new_genre_name: str, isbn: str | None = None) -> None:
         with Session(self.engine) as session:
             book = session.get(Book, book_id)
             if not book:
@@ -202,6 +202,8 @@ class DatabaseAPI:
             book.title = new_title
             book.author = author
             book.genre = genre
+            if isbn != None:
+                book.isbn = isbn
 
             session.commit()
 
